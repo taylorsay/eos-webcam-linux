@@ -4,6 +4,12 @@ Use a Canon EOS camera as a Linux webcam — in OBS, Discord, Zoom, or any V4L2-
 
 Works with any Canon EOS that supports USB live view via libgphoto2 (most DSLRs from the 500D/T1i onward).
 
+Expect this to be buggy. The alternative was messing around with v4l2loopback. I tried it for a little bit but it was just super jank. This is a very similar approach but its packaged more like a driver.
+
+I have only tested on my system: Arch, kde wayland, Canon EOS1200D. Working fine for me through OBS and Discord. It does only work at like 9 FPS which is explained further below. But I found it super usable for stuff like a small camera on a twitch stream or when doing normal webcam stuff on discord.
+
+Should just be able to clone it and run the .sh file. 
+
 ## How it works
 
 ```
@@ -22,7 +28,6 @@ The daemon starts automatically on login and restarts itself if the camera is un
 
 ## Requirements
 
-- Linux (kernel 4.x+)
 - A Canon EOS camera supported by libgphoto2 (see [supported cameras](http://www.gphoto.org/proj/libgphoto2/support.php))
 - `v4l2loopback-dkms` kernel module
 - Build tools: meson, ninja, pkg-config, C++17 compiler
