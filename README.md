@@ -35,8 +35,8 @@ The daemon starts automatically on login and restarts itself if the camera is un
 ## Installation
 
 ```bash
-git clone https://github.com/taylorsay/eos-webcam.git
-cd eos-webcam
+git clone https://github.com/taylorsay/eos-webcam-linux.git
+cd eos-webcam-linux
 bash install.sh
 ```
 
