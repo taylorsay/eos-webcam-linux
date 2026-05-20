@@ -174,13 +174,17 @@ int main(int argc, char *argv[])
         if (actualW == 0) {
             int w, h, subsamp, cs;
             if (tjDecompressHeader3(tjh, (const uint8_t *)data, size,
-                                    &w, &h, &subsamp, &cs) == 0) {
-                actualW = w;
-                actualH = h;
-            } else {
-                actualW = 1056;
-                actualH = 704;
+                                    &w, &h, &subsamp, &cs) != 0) {
+                fprintf(stderr, "\nFailed to read JPEG header, skipping frame: %s\n",
+                        tjGetErrorStr2(tjh));
+                continue;
             }
+            if (w < 320 || w > 8192 || h < 240 || h > 8192) {
+                fprintf(stderr, "\nRejecting implausible JPEG dimensions %dx%d\n", w, h);
+                continue;
+            }
+            actualW = w;
+            actualH = h;
             fprintf(stderr, "Live view resolution: %dx%d\n", actualW, actualH);
             if (configure_loopback(loopfd, actualW, actualH) < 0)
                 break;

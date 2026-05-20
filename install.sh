@@ -53,12 +53,19 @@ install_deps() {
                 meson ninja-build pkg-config build-essential
             ;;
         fedora)
+            # Core build deps must succeed (set -e will catch failures)
             sudo dnf install -y \
                 libgphoto2-devel turbojpeg-devel \
-                meson ninja-build pkgconf-pkg-config gcc-c++ \
-                kmod-v4l2loopback || \
-            sudo dnf install -y v4l2loopback 2>/dev/null || \
-                warn "v4l2loopback not found in repos — install it manually or via DKMS"
+                meson ninja-build pkgconf-pkg-config gcc-c++
+            # v4l2loopback may live in different package names (RPM Fusion vs base)
+            if   sudo dnf install -y akmod-v4l2loopback 2>/dev/null; then :
+            elif sudo dnf install -y kmod-v4l2loopback  2>/dev/null; then :
+            elif sudo dnf install -y v4l2loopback       2>/dev/null; then :
+            else
+                warn "v4l2loopback not found in repos."
+                warn "Enable RPM Fusion: https://rpmfusion.org/Configuration"
+                warn "Then run: sudo dnf install akmod-v4l2loopback"
+            fi
             ;;
         *)
             warn "Unrecognised distro. Install manually:"
@@ -126,7 +133,7 @@ setup_udev() {
 
     sudo tee /etc/udev/rules.d/70-eos-webcam.conf > /dev/null <<'EOF'
 # eos-webcam: grant access to Canon EOS cameras for the plugdev group
-SUBSYSTEM=="usb", ATTR{idVendor}=="04a9", MODE="0664", GROUP="plugdev"
+SUBSYSTEM=="usb", ATTR{idVendor}=="04a9", MODE="0660", GROUP="plugdev"
 EOF
 
     sudo udevadm control --reload-rules
