@@ -1,6 +1,6 @@
 [Unit]
 Description=Canon EOS webcam bridge
-Documentation=https://github.com/taylorsay/eos-webcam
+Documentation=https://github.com/taylorsay/eos-webcam.git
 After=graphical-session.target
 
 [Service]
